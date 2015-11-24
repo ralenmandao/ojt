@@ -29,6 +29,7 @@ list<location> readLocationFile();
 void printList(list<location> locs);
 list<location> addCity(string city,int x ,int y);
 void saveList(list<location> locs);
+void printPreffered(list<location> locs);
 
 /*
  * get the distance of two location
@@ -57,7 +58,7 @@ int main() {
 		if(choice == "a"){
 			while(temp != "z"){
 				while(choice != "0"){
-					cout << ">> Please choose from which city you wish to start your travel; enter" << endl;
+					cout << ">> Please choose a city" << endl;
 					// Display each city and their number
 					for (list<location>::iterator it=locations.begin(); it != locations.end(); ++it){
 						cout << distance(locations.begin(), it) + 1<< " for " << it->city << endl ;
@@ -90,15 +91,15 @@ int main() {
 				int min = floor(getDistance(*journey.begin(),*next(journey.begin(), 1)));
 				int max = 0;
 				// print the names of the chosen location at the top
-				cout << endl << "\t" ;
+				cout << endl << "\t\t" ;
 				for (list<location>::iterator it=journey.begin(); it != journey.end(); ++it){
-					cout << "\t" << it->city << "\t";
+					cout << setfill('-') << setw(10) << left << it->city;
 				}
 				cout << endl ;
 
 				// print the current location and its distance to other city
 				for (list<location>::iterator it=journey.begin(); it != journey.end(); ++it){
-					cout << it->city ;
+					cout <<  setfill('-') << setw(16)<< it->city ;
 					for(list<location>::iterator it1=journey.begin(); it1 != journey.end(); ++it1){
 						int d = floor(getDistance(*it, *it1));
 						if(it != it1){
@@ -109,7 +110,7 @@ int main() {
 								max = d;
 							}
 						}
-						cout << "\t\t" << d;
+						cout << setfill('-') <<  setw(10) << d;
 					}
 					cout << endl;
 				}
@@ -133,6 +134,17 @@ int main() {
 				}
 
 				cout << endl << "Total travel distance: " << total << endl;
+
+				//printPreffered(locations);
+
+				for(int x = 0; x < journey.size() ; x++){
+					if(x == journey.size() - 1){
+						cout << next(journey.begin(), x)->city << " -> " << floor(getDistance(*next(journey.begin(), x), *journey.begin()));
+					}else{
+						cout << next(journey.begin(), x)->city << " -> " << floor(getDistance(*next(journey.begin(), x), *next(journey.begin(), x + 1))) << " -> ";
+					}
+				}
+
 				cout << endl << "a. Choose another List";
 				cout << endl << "z. Main menu" << endl << ">> ";
 				cin >> temp;
@@ -182,6 +194,26 @@ int main() {
 					cout << endl ;
 				}
 			}
+			cout << endl;
+		}else if(choice == "e"){
+			int max = 0;
+			location loc1;
+			location loc2;
+			int d = 0;
+			for (list<location>::iterator it=locations.begin(); it != locations.end(); ++it){
+				for (list<location>::iterator it1=locations.begin(); it1 != locations.end(); ++it1){
+						if(it != it1){
+							d = floor(getDistance(*it,*it1));
+							if(d > max){
+								max = d;
+								loc1 = *it;
+								loc2 = *it1;
+							}
+						}
+				}
+			}
+
+			cout << loc1.city << " -> " << d << " -> " << loc2.city << endl << endl;
 		}
 	}
 	return 0;
@@ -207,7 +239,7 @@ list<location> readLocationFile(){
 }
 // Check whether str can be parse to int
 bool is_digits(string str){
-    return std::all_of(str.begin(), str.end(), ::isdigit);
+    return true;
 }
 
 void printList(list<location> locs){
@@ -239,6 +271,28 @@ void saveList(list<location> locs){
 		myfile << it->y << "\n" ;
 	}
 	myfile.close();
+}
+
+void printPreffered(list<location> locs){
+	int low = 0;
+	list<location> pref;
+	list<location>::iterator temp;
+	for (list<location>::iterator it=locs.begin(); it != locs.end(); ++it){
+		low = floor(getDistance(*it,*next(locs.begin(), 1)));
+		for (list<location>::iterator it1=locs.begin(); it1 != locs.end(); ++it1){
+			if(it != it1){
+				int d = floor(getDistance(*it,*it1));
+				if(d < low){
+					low = d;
+					temp = it1;
+				}
+			}
+		}
+		locs.erase(temp);
+		locs.erase(it);
+		locs.push_back(*it);
+		locs.push_back(*temp);
+	}
 }
 
 

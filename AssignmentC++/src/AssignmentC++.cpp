@@ -29,6 +29,7 @@ list<location> readLocationFile();
 void printList(list<location> locs);
 list<location> addCity(string city,int x ,int y);
 void saveList(list<location> locs);
+
 /*
  * get the distance of two location
  */
@@ -239,3 +240,5 @@ void saveList(list<location> locs){
 	}
 	myfile.close();
 }
+
+

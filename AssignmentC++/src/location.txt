@@ -28,6 +28,3 @@ Mexico
 Los Angeles
 100
 5000
-a
-2
-2

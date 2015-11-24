@@ -28,6 +28,7 @@ bool is_digits(string str);
 list<location> readLocationFile();
 void printList(list<location> locs);
 list<location> addCity(string city,int x ,int y);
+void saveList(list<location> locs);
 /*
  * get the distance of two location
  */
@@ -157,8 +158,29 @@ int main() {
 			cin >> x;
 			cout << "Y >> ";
 			cin >> y;
-			cout << city << " was added!" << endl;
+			cout << city << " was added!" << endl << endl;
  			locations = addCity(city,x,y);
+		}else if(choice == "d"){
+			// Display each city and their number
+			for (list<location>::iterator it=locations.begin(); it != locations.end(); ++it){
+				cout << distance(locations.begin(), it) + 1<< " for " << it->city << endl ;
+			}
+			cout << "0 to cancel" << endl;
+			cout << ">> " ;
+			cin >> choice;
+			// Check weather the user type a non integer or number that is out of range
+			if(!(is_digits(choice))){
+				cout << "Wrong input try again" << endl ;
+			}else{
+				int c = stoi(choice);
+				if(((c - 1) >= locations.size() && (c - 1) < 0) && c != 0){
+					cout << "Invalid location" << endl ;
+				}else if(c != 0){
+					locations.erase(next(locations.begin(), c - 1));
+					saveList(locations);
+					cout << endl ;
+				}
+			}
 		}
 	}
 	return 0;
@@ -194,7 +216,7 @@ void printList(list<location> locs){
 		cout << "X : " << it->x << endl;
 		cout << "Y : " << it->y << endl;
 	}
-	cout << "--------------------------------------" << endl;
+	cout << "--------------------------------------" << endl << endl;
 }
 
 list<location> addCity(string city,int x ,int y){
@@ -205,4 +227,15 @@ list<location> addCity(string city,int x ,int y){
 	  myfile << y ;
 	  myfile.close();
 	  return readLocationFile();
+}
+
+void saveList(list<location> locs){
+	ofstream myfile;
+	myfile.open (FILE_LOCATION);
+	for (list<location>::iterator it=locs.begin(); it != locs.end(); ++it){
+		myfile << it->city << "\n";
+		myfile << it->x << "\n";
+		myfile << it->y << "\n" ;
+	}
+	myfile.close();
 }

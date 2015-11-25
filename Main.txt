@@ -1,0 +1,35 @@
+AddAdmin, AddressBook, AdminUserControl, GiftAdd
+Have all the same code, the only changes is their records queries,
+so i will try to explain AddAdmin so that you will understand the others
+
+So i will simulate it for you
+
+(FORM LOAD)
+>> hideSecondaryButtons()
+The form was open so we dont want to show the Save, Cancel, Clear since i didnt press New or Update button
+>> showMainButtons()
+Now i want the user to show New, Update and Delete
+>> disableFields()
+But i dont want the user to edit the textboxes unless the user click New, or Update
+>> reloadAdmins()
+Now i want the table to laod the latest records in my database
+
+(WHEN THE USER SELECT A ROW)
+>> If dgvAdmins.SelectedRows.Count > 0
+I want to change the textboxes values when the user change selection , but the problem when for example
+there is only 1 row left and you deleted it then dgvUser_SelectionChanged() will still be called , since
+the selection is change to nothing, so we need to make sure that whenever dgvUser_SelectionChanged() is called
+there is a selected values
+>> Dim id As Integer = dgvAdmins.SelectedRows(0).Cells(0).Value
+>> ...
+now i will save each selected rows values to each variable so that i can easily locate them istead of using 
+dgvAdmins.SelectedRows(0).Cells(0).Value everytime i want to select an id , then display each on their respective
+textboxes
+
+(WHEN THE USER CLICK NEW)
+>> clear()
+since we change each textboxes value whenever we select a row , we need to clear each textboxes when the user type
+>> saveMode = "new"
+we only have 1 save button , so that save button will save whenever we create New, or Update , the problem was
+if the save button was click how it will know if im creating or updating a record ? , thats why we change saveMode
+each time New or Update was click, so that save will decide if it will Insert the record or Update the record

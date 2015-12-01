@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        ">
+	<context:annotation-config/>
+	
+	<bean name="moneyAlgo" class="com.ralen.activity3.algorithm.imp.MoneyMakerAlgorithm">
+		<property name="minimum" value="100" /> 
+	</bean>
+	<bean name="freeAlgorithm" class="com.ralen.activity3.algorithm.imp.AlmostFreeAlgorithm" />
+	<bean name="suicidalAlgo" class="com.ralen.activity3.algorithm.imp.SuicidalBrokerAlgorithm" />
+	<bean name="lazyAlgo" class="com.ralen.activity3.algorithm.imp.LazyBrokerAlgorithm" />
+	<bean name="prudentAlgo" class="com.ralen.activity3.algorithm.imp.PrudentBrokerAlgorithm">
+		<property name="minimum" value="100" />
+	</bean>
+	<bean name="basicAlgo" class="com.ralen.activity3.algorithm.imp.BasicAlgorithm">
+		<property name="maxYear" value="10" />
+	</bean>
+
+	<bean name="gui" class="com.ralen.activity3.LoanBrokerGUI" />
+	<bean name="lb" class="com.ralen.activity3.service.imp.LoanBrokerServiceImp">
+		<property name="algos">
+        <list value-type="com.mom.TypeForList">
+            <ref bean="prudentAlgo"/>
+            <ref bean="basicAlgo"/>
+            <ref bean="moneyAlgo"/>
+        </list>
+	    </property>
+	</bean>
+	<bean name="creditAgencyDao" class="com.ralen.activity3.dao.imp.CreditAgencyDAOImp">
+		<constructor-arg value="https://dev-esb.toroserver.com/services/CreditAgencyServiceImpl.CreditAgencyServiceImplHttpsSoap11Endpoint/" />
+	</bean>
+	<bean name="lenderAgencyDao" class="com.ralen.activity3.dao.imp.LenderAgencyDAOImp">
+		<constructor-arg value="https://dev-esb.toroserver.com/services/LenderAgencyServiceImpl.LenderAgencyServiceImplHttpsSoap11Endpoint/" />
+	</bean>
+</beans>

@@ -32,10 +32,10 @@ class GUI {
 					constraints: new GC(gridx: 0, gridy: 1, fill:GC.HORIZONTAL, gridwidth: GC.REMAINDER),
 					actionPerformed:{
 						if(cboChoices.selectedIndex == 0){
-							def res = TempConverterAPI.getCelciusToFahrenheit(input.text)
+							def res = Something.getCelciusToFahrenheit(input.text)
 							JOptionPane.showMessageDialog(mainFrame, "${res} C")
 						}else{
-							def res = TempConverterAPI.getFahrenheitToCelcius(input.text)
+							def res = Something.getFahrenheitToCelcius(input.text)
 							JOptionPane.showMessageDialog(mainFrame, "${res} F")
 						}
 					})

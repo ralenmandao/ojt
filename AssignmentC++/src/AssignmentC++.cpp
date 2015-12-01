@@ -16,7 +16,9 @@
 
 using namespace std;
 
-const string FILE_LOCATION = "src/location.txt";
+const string FILE_LOCATION = "location.txt";
+const string USERNAME = "admin";
+const string PASSWORD = "pass";
 
 struct location{
 	string city;
@@ -24,19 +26,16 @@ struct location{
 	int y;
 };
 
-bool is_digits(string str);
+bool isNumber(string s);
 list<location> readLocationFile();
 void printList(list<location> locs);
 list<location> addCity(string city,int x ,int y);
 void saveList(list<location> locs);
-void printPreffered(list<location> locs);
-
-/*
- * get the distance of two location
- */
-double getDistance(location loc1, location loc2){
-	return sqrt(pow(loc1.x - loc2.x,2) + pow(loc1.y - loc2.y,2));
-}
+list<location> printPreffered(list<location> locs);
+double getDistance(location loc1, location loc2);
+void printTravelRoute(list<location> locs);
+void printDistanceWithMinMax(list<location> journey);
+bool auth();
 
 int main() {
 	// load all the locations from the location.txt
@@ -51,12 +50,15 @@ int main() {
 		cout << "c. Add City" << endl;
 		cout << "d. Remove City" << endl;
 		cout << "e. Find two cities with the maximum distance between them" << endl;
+		cout << "z. Exit" << endl;
 		cout << ">> ";
 		cin >> choice;
 		cout << endl;
 
 		if(choice == "a"){
+			// a loop if the user wants to select another travel route
 			while(temp != "z"){
+				// a loop if the user stil lwants to select a city
 				while(choice != "0"){
 					cout << ">> Please choose a city" << endl;
 					// Display each city and their number
@@ -69,7 +71,7 @@ int main() {
 					cin >> choice;
 
 					// Check weather the user type a non integer or number that is out of range
-					if(!(is_digits(choice))){
+					if(!(isNumber(choice))){
 						cout << "Wrong input try again" << endl ;
 					}else{
 						int c = stoi(choice);
@@ -82,14 +84,13 @@ int main() {
 						}
 					}
 				}
+
+				cout << endl;
 				// if the user choose 1 or no city then go to the main menu
 				if(journey.size() == 0 || journey.size() == 1){
 					break;
 				}
 
-				// the initial min is the distance of the first 2 city
-				int min = floor(getDistance(*journey.begin(),*next(journey.begin(), 1)));
-				int max = 0;
 				// print the names of the chosen location at the top
 				cout << endl << "\t\t" ;
 				for (list<location>::iterator it=journey.begin(); it != journey.end(); ++it){
@@ -97,58 +98,21 @@ int main() {
 				}
 				cout << endl ;
 
-				// print the current location and its distance to other city
-				for (list<location>::iterator it=journey.begin(); it != journey.end(); ++it){
-					cout <<  setfill('-') << setw(16)<< it->city ;
-					for(list<location>::iterator it1=journey.begin(); it1 != journey.end(); ++it1){
-						int d = floor(getDistance(*it, *it1));
-						if(it != it1){
-							if(min > d){
-								min = d;
-							}
-							if(max < d){
-								max = d;
-							}
-						}
-						cout << setfill('-') <<  setw(10) << d;
-					}
-					cout << endl;
-				}
+				// print the distance and their min and max
+				printDistanceWithMinMax(locations);
+				// print the travel route
+				printTravelRoute(journey);
 
-				cout << endl << "Min : " << min;
-				cout << endl << "Max : " << max;
-
-				cout << endl << endl;
-				int total = 0;
-				for(int x = 0; x < journey.size() ; x++){
-					int d = 0;
-					if(x == journey.size() - 1){
-						d = floor(getDistance(*next(journey.begin(), x), *journey.begin()));
-						cout << next(journey.begin(), x)->city << " -> " << d;
-						total += d;
-					}else{
-						d = floor(getDistance(*next(journey.begin(), x), *next(journey.begin(), x + 1)));
-						cout << next(journey.begin(), x)->city << " -> " << d << " -> ";
-						total += d;
-					}
-				}
-
-				cout << endl << "Total travel distance: " << total << endl;
-
-				//printPreffered(locations);
-
-				for(int x = 0; x < journey.size() ; x++){
-					if(x == journey.size() - 1){
-						cout << next(journey.begin(), x)->city << " -> " << floor(getDistance(*next(journey.begin(), x), *journey.begin()));
-					}else{
-						cout << next(journey.begin(), x)->city << " -> " << floor(getDistance(*next(journey.begin(), x), *next(journey.begin(), x + 1))) << " -> ";
-					}
-				}
+				cout << endl << "Suggested Travel Route : " << endl << endl;
+				journey = printPreffered(journey);
+				// print the preffered travel route
+				printTravelRoute(journey);
 
 				cout << endl << "a. Choose another List";
 				cout << endl << "z. Main menu" << endl << ">> ";
 				cin >> temp;
 
+				// clear the list for the next travel
 				journey.clear();
 				cout << endl;
 
@@ -162,6 +126,8 @@ int main() {
 		}else if(choice == "b"){
 			printList(locations);
 		}else if(choice == "c"){
+			if(!auth()) continue;
+			cout << "Authentication Succesful!" << endl << endl;
 			string city;
 			int x = 0;
 			int y = 0;
@@ -174,6 +140,8 @@ int main() {
 			cout << city << " was added!" << endl << endl;
  			locations = addCity(city,x,y);
 		}else if(choice == "d"){
+			if(!auth()) continue;
+			cout << "Authentication Succesful!" << endl << endl;
 			// Display each city and their number
 			for (list<location>::iterator it=locations.begin(); it != locations.end(); ++it){
 				cout << distance(locations.begin(), it) + 1<< " for " << it->city << endl ;
@@ -182,7 +150,7 @@ int main() {
 			cout << ">> " ;
 			cin >> choice;
 			// Check weather the user type a non integer or number that is out of range
-			if(!(is_digits(choice))){
+			if(!(isNumber(choice))){
 				cout << "Wrong input try again" << endl ;
 			}else{
 				int c = stoi(choice);
@@ -214,14 +182,14 @@ int main() {
 			}
 
 			cout << loc1.city << " -> " << d << " -> " << loc2.city << endl << endl;
+		}else if(choice == "z"){
+			return 0;
 		}
 	}
 	return 0;
 }
 
-/*
- * Read the file and create an array of location
- */
+// Read the file and create an array of location
 list<location> readLocationFile(){
 	ifstream infile(FILE_LOCATION);
 	string line;
@@ -237,11 +205,8 @@ list<location> readLocationFile(){
 	}
 	return locations;
 }
-// Check whether str can be parse to int
-bool is_digits(string str){
-    return true;
-}
 
+// print the list of cities
 void printList(list<location> locs){
 	for (list<location>::iterator it=locs.begin(); it != locs.end(); ++it){
 		cout << "--------------------------------------" << endl ;
@@ -252,6 +217,7 @@ void printList(list<location> locs){
 	cout << "--------------------------------------" << endl << endl;
 }
 
+// add a city in the file
 list<location> addCity(string city,int x ,int y){
 	ofstream myfile;
 	  myfile.open (FILE_LOCATION, ios::app);
@@ -262,6 +228,7 @@ list<location> addCity(string city,int x ,int y){
 	  return readLocationFile();
 }
 
+// save the list of locations into the file
 void saveList(list<location> locs){
 	ofstream myfile;
 	myfile.open (FILE_LOCATION);
@@ -273,26 +240,110 @@ void saveList(list<location> locs){
 	myfile.close();
 }
 
-void printPreffered(list<location> locs){
+list<location> printPreffered(list<location> locs){
 	int low = 0;
 	list<location> pref;
 	list<location>::iterator temp;
-	for (list<location>::iterator it=locs.begin(); it != locs.end(); ++it){
-		low = floor(getDistance(*it,*next(locs.begin(), 1)));
-		for (list<location>::iterator it1=locs.begin(); it1 != locs.end(); ++it1){
-			if(it != it1){
-				int d = floor(getDistance(*it,*it1));
-				if(d < low){
-					low = d;
-					temp = it1;
-				}
+	list<location>::iterator lowest;
+	while (!locs.empty()){
+		if(locs.size() == 2){
+			pref.push_back(locs.front());
+			pref.push_back(locs.back());
+			break;
+		}
+		pref.push_front(locs.front());
+		temp = pref.begin();
+		locs.pop_front();
+		int low = floor(getDistance(*temp, *locs.begin()));
+		lowest = locs.begin();
+		for (list<location>::iterator it=locs.begin(); it != locs.end(); ++it){
+			int d = floor(getDistance(*temp, *it));
+			if(d < low){
+				low = d;
+				lowest = it;
 			}
 		}
-		locs.erase(temp);
-		locs.erase(it);
-		locs.push_back(*it);
-		locs.push_back(*temp);
+		locs.erase(lowest);
+		locs.push_front(*lowest);
 	}
+	return pref;
 }
 
+// Check if a string is a number
+// @ http://stackoverflow.com/questions/5655142/how-to-check-if-input-is-numeric-in-c
+bool isNumber(string s )
+{
+  bool hitDecimal=0;
+  for( char c : s )
+  {
+    if( c=='.' && !hitDecimal ) // 2 '.' in string mean invalid
+      hitDecimal=1; // first hit here, we forgive and skip
+    else if( !isdigit( c ) )
+      return 0 ; // not ., not
+  }
+  return 1 ;
+}
 
+// Get the distance of two location
+double getDistance(location loc1, location loc2){
+	return sqrt(pow(loc1.x - loc2.x,2) + pow(loc1.y - loc2.y,2));
+}
+
+// print the travel route
+void printTravelRoute(list<location> journey){
+	int total = 0;
+	for(int x = 0; x < journey.size() ; x++){
+		int d = 0;
+		if(x == journey.size() - 1){
+			d = floor(getDistance(*next(journey.begin(), x), *journey.begin()));
+			cout << next(journey.begin(), x)->city << " -> " << d;
+			total += d;
+		}else{
+			d = floor(getDistance(*next(journey.begin(), x), *next(journey.begin(), x + 1)));
+			cout << next(journey.begin(), x)->city << " -> " << d << " -> ";
+			total += d;
+		}
+	}
+	cout << endl << "Total travel distance: " << total << endl;
+}
+
+// print the distance and min and max
+void printDistanceWithMinMax(list<location> journey){
+	// the initial min is the distance of the first 2 city
+	int min = floor(getDistance(*journey.begin(),*next(journey.begin(), 1)));
+	int max = 0;
+	// print the current location and its distance to other city
+	for (list<location>::iterator it=journey.begin(); it != journey.end(); ++it){
+		cout <<  setfill('-') << setw(16)<< it->city ;
+		for(list<location>::iterator it1=journey.begin(); it1 != journey.end(); ++it1){
+			int d = floor(getDistance(*it, *it1));
+			if(it != it1){
+				if(min > d){
+					min = d;
+				}
+				if(max < d){
+					max = d;
+				}
+			}
+			cout << setfill('-') <<  setw(10) << d;
+		}
+		cout << endl;
+	}
+
+	cout << endl << "Min : " << min << endl << "Max : " << max << endl << endl;
+}
+
+// Authenticate if the username and password match it will return true
+bool auth(){
+	string user, pass;
+	cout << "User >> ";
+	cin >> user;
+	cout << "Pass >> ";
+	cin >> pass;
+	cout << endl;
+	if(user != USERNAME || pass != PASSWORD){
+		cout << endl << "Invalid Username or password" << endl;
+		return false;
+	}
+	return true;
+}

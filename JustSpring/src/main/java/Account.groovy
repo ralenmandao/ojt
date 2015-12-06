@@ -1,0 +1,4 @@
+
+class Account {
+	String id
+}

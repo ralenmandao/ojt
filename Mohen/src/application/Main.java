@@ -13,7 +13,7 @@ public class Main {
 			choice = sc.nextLine();
 			if(choice.equals("help")){
 				showHelp();
-			}else if(choice.matches("send (saw|gbn) .*? \\w+ \\d+ \\d+")){ // match send <gbn || saw> <file> <ip> <port> <simulation>
+			}else if(choice.matches("send (saw|gbn) .*? .*? \\d+ \\d+")){ // match send <gbn || saw> <file> <ip> <port> <simulation>
 				// handle and display an error if it occurs
 				try{
 					String[] str = choice.split(" ");

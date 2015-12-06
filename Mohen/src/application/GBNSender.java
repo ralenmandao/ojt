@@ -19,7 +19,7 @@ public class GBNSender {
 	private boolean isEOF = false;
 	private int portNum;
 	private DatagramSocket socket_sender;
-	private List < WindowPacket > packet_window;
+	private List<WindowPacket> packet_window;
 	private FileInputStream fis_datasent;
 	public boolean isThreadRunning;
 	private int num_acked;
@@ -27,10 +27,10 @@ public class GBNSender {
 	private InetAddress receive_ip;
 
 	public GBNSender(String receiver_ip, int portNum, int sim_num, String file)
-	throws FileNotFoundException, SocketException, UnknownHostException {
+			throws FileNotFoundException, SocketException, UnknownHostException {
 		// instantiate objects
 		fis_datasent = new FileInputStream(new File(file));
-		packet_window = new ArrayList < WindowPacket > ();
+		packet_window = new ArrayList<WindowPacket>();
 		socket_sender = new DatagramSocket();
 		receive_ip = InetAddress.getByName(receiver_ip);
 		// assign instance variable
@@ -43,7 +43,8 @@ public class GBNSender {
 		// the acknowledgement socket
 		DatagramSocket socketAck = new DatagramSocket(portNum + 1);
 
-		new Thread(new Runnable() {@Override
+		new Thread(new Runnable() {
+			@Override
 			public void run() {
 				while (!isThreadRunning) {
 					byte[] ack_byte = new byte[2];
@@ -97,8 +98,8 @@ public class GBNSender {
 					isEOF = false;
 				}
 				byte sendData[] = new byte[datalen + 3];
-				sendData[0] = (byte)(packetNum >> 8);
-				sendData[1] = (byte)(packetNum);
+				sendData[0] = (byte) (packetNum >> 8);
+				sendData[1] = (byte) (packetNum);
 				if (isEOF) {
 					sendData[2] = (byte) 1;
 				} else {
@@ -116,7 +117,7 @@ public class GBNSender {
 
 			boolean packet_sends = false;
 
-			for (WindowPacket packet: packet_window) {
+			for (WindowPacket packet : packet_window) {
 
 				if (packet.getpacketNum() > num_acked) {
 
@@ -153,21 +154,26 @@ public class GBNSender {
 		private boolean isAck;
 		private int packetNum;
 		private long last_sent;
+
 		public WindowPacket(DatagramPacket p_packet, boolean p_acked, int p_packetNum) {
 			this.packetNum = p_packetNum;
 			this.window_packet = p_packet;
 			this.last_sent = 0;
 			this.isAck = p_acked;
 		}
+
 		public DatagramPacket getPacket() {
 			return window_packet;
 		}
+
 		public int getpacketNum() {
 			return packetNum;
 		}
+
 		public long getTimeLastSent() {
 			return last_sent;
 		}
+
 		public void setTimeLastSent(long timeLastSent) {
 			this.last_sent = timeLastSent;
 		}

@@ -38,15 +38,31 @@
 		
 		for(var x = 0; x < table.rows.length; x++){
 			for(var y = 0; y < table.rows[x].cells.length; y++){
-				cells.push({cell : table.rows[x].cells[y], x: x, y: y});
+				var cell = {cell : table.rows[x].cells[y], x: x, y: y}
+				cells.push(cell);
+				cell.cell.onclick = function(){
+										console.log(cell.cell)
+										// if((from.x - noElement.x == 1) && from.y == noElement.y){
+										// 	moveLeft(from, to);
+										// 	console.log("FUCK")
+										// }
+									}
 			}
 		}
 		noElement = cells[Math.floor(Math.random() * cells.length)]
 		noElement.cell.classList.add("empty");
 		noElement.cell.innerHTML = ""
+		//noElement.cell.style.position = "absolute"
+		//noElement.cell.style.left = "100px";
+		//noElement.cell.style.backgroundColor = "pink"
+		//console.log(noElement.cell.style.left)
 		
-		function move(var from, var to){
-			
+
+		function moveLeft(from,to){
+			from.cell.position = "absolute"
+			setTimeout(function(){
+				//from.cell.left
+			}, 100);
 		}
 	</script>
 	<style>

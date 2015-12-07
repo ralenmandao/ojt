@@ -1,0 +1,12 @@
+<players>
+	<player name="Name Name">
+		<email>
+			name@yahoo.com
+		</email>
+		<player-config>
+			<initial-box-color>
+				red
+			</initial-box-color>
+		</player-config>
+	</player>
+</players>

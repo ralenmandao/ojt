@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head></head>
+	<body>
+	<input type = "text" placeholder = "username" id="username"><br>
+	<input type = "password" placeholder = "password" id="password"><br>
+	<input type = "button" value = "login" id="loginButton">
+	<div id="message"></div>
+	</body>
+	<script>
+		function loadSyncPost() {
+			var username = document.getElementById("username").value;
+			var password = document.getElementById("password").value;
+			var data = "userName=" + username + "&password=" + password;
+			var localRequest = new XMLHttpRequest();
+
+			// PASSING false AS THE THIRD PARAMETER TO open SPECIFIES SYNCHRONOUS
+			localRequest.open("POST", "http://universe.tc.uvu.edu/cs2550/assignments/PasswordCheck/check.php", false);
+			localRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			localRequest.send(data);
+
+			// NOTE THAT THE status WILL NOT BE 200 IF THE REQUEST IS FOR A
+			// LOCAL FILE.
+			var dataDiv = document.getElementById("message");
+			if (localRequest.status == 200) {
+				// FOR MORE INFORMATION ABOUT JSON SEE http://json.org
+				var responseJson = JSON.parse(localRequest.responseText);
+				if(responseJson["result"] == "invalid"){
+					dataDiv.innerHTML = "Incorrect login credentials";
+				}else{
+					localStorage.setItem('cs2550timestamp',responseJson['userName'] + " " + responseJson['timestamp']);
+					window.location.href = 'checkpoint.html';
+				}
+			}
+		}
+		
+		var loginButton = document.getElementById("loginButton");
+		loginButton.onclick = loadSyncPost;
+	</script>
+</html>

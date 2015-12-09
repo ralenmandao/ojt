@@ -1,0 +1,7 @@
+import com.ralen.ApplicationContext;
+
+public class Main {
+	ApplicationContext context = new ApplicationContext("");
+	Sample sample = context.getBean("sample");
+	sample.print();
+}

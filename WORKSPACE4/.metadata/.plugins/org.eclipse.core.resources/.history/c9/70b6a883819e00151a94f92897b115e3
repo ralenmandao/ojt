@@ -1,0 +1,5 @@
+import com.ralen.ApplicationContext;
+
+public class Main {
+	ApplicationContext context = new ApplicationContext("");
+}

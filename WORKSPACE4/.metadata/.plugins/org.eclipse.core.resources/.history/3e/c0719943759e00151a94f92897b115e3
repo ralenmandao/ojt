@@ -1,0 +1,10 @@
+package com.ralen.sample;
+
+import com.ralen.annotation.Bean;
+
+@Bean
+public class Person {
+	public void printName(){
+		System.out.println("WEW");
+	}
+}

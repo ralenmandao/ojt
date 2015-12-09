@@ -1,0 +1,7 @@
+package com.ralen.sample;
+
+public class Message {
+	public void showMessage(){
+		System.out.println("Wew");
+	}
+}

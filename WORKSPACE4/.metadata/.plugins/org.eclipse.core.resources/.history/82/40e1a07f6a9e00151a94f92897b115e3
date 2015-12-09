@@ -1,0 +1,5 @@
+package com.ralen.annotation;
+
+public class Bean {
+
+}

@@ -1,0 +1,13 @@
+package com.ralen.sample;
+
+import com.ralen.annotation.Bean;
+import com.ralen.annotation.Inject;
+
+@Bean
+public class Person {
+	@Inject
+	Message message;
+	public void printName(){
+		System.out.println("WEW");
+	}
+}

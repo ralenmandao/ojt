@@ -1,0 +1,9 @@
+import com.ralen.annotation.Bean;
+
+@Bean
+public class Person {
+	
+	public void print(){
+		System.out.println("message");
+	}
+}

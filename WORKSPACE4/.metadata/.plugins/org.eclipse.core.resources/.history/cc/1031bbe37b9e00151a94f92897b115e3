@@ -1,0 +1,16 @@
+package com.ralen;
+
+import com.ralen.sample.Person;
+
+public class Main {
+	public static void main(String[] args){
+		ApplicationContext context = new ApplicationContext("com.ralen");
+//		Person person = context.getBean("person");
+//		person.printName();
+//		
+//		
+//		for(Object o : context.getBeans()){
+//			System.out.println(o);
+//		}
+	}
+}

@@ -1,0 +1,7 @@
+import com.ralen.ApplicationContext;
+
+public class Main {
+	ApplicationContext context = new ApplicationContext("");
+	Person person = context.getBean("person");
+	person.print();
+}

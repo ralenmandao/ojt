@@ -1,0 +1,8 @@
+package com.ralen.sample;
+
+import com.ralen.annotation.Bean;
+
+@Bean
+public class Person {
+
+}

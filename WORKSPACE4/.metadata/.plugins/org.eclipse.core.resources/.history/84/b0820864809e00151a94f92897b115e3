@@ -1,0 +1,10 @@
+package com.ralen.sample;
+
+import com.ralen.annotation.Bean;
+
+@Bean
+public class Message {
+	public void showMessage(){
+		System.out.println("Message");
+	}
+}

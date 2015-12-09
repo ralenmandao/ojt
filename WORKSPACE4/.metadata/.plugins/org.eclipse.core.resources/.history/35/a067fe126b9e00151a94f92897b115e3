@@ -1,0 +1,16 @@
+package di;
+
+import org.reflections.Reflections;
+
+public class ApplicationContext {
+	
+	private Reflections reflections = null;
+	
+	public ApplicationContext(String basePackage){
+		reflections = new Reflections(basePackage);
+		
+	}
+	
+	
+	
+}  

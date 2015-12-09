@@ -1,0 +1,18 @@
+package di;
+
+import org.reflections.Reflections;
+
+import com.ralen.annotation.Bean;
+
+public class ApplicationContext {
+	
+	private Reflections reflections = null;
+	
+	public ApplicationContext(String basePackage){
+		reflections = new Reflections(basePackage);
+		reflections.getTypesAnnotatedWith(Bean.class);
+	}
+	
+	
+	
+}  

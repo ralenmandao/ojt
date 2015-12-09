@@ -1,0 +1,60 @@
+package com.ralen;
+
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.reflections.Reflections;
+
+import com.ralen.annotation.Bean;
+
+public class ApplicationContext {
+
+	private Reflections reflections = null;
+	private Map<String, Object> clazz = new HashMap<String, Object>();
+
+	public ApplicationContext(String basePackage) {
+		reflections = new Reflections(basePackage);
+		Set<Class<?>> beans = reflections.getTypesAnnotatedWith(Bean.class);
+		for (Class<?> bean : beans) {
+			try {
+				Bean an = bean.getAnnotation(Bean.class);
+				String name = null;
+				if(an.value().length() == 0){
+					name = bean.getSimpleName();
+				}else{
+					name = an.value();
+				}
+				clazz.put(name, (Object) bean.newInstance());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getBean(String name) {
+		return (T) convertInstanceOfObject(clazz.get(name), clazz.get(name).getClass());
+	}
+	
+	private static <T> T convertInstanceOfObject(Object o, Class<T> clazz) {
+	    try {
+	        return clazz.cast(o);
+	    } catch(ClassCastException e) {
+	        return null;
+	    }
+	}
+
+	public Collection<Object> getBeans() {
+		return clazz.values();
+	}
+
+	public void lol() {
+		for (String o : clazz.keySet()) {
+			System.out.println(o);
+		}
+	}
+}

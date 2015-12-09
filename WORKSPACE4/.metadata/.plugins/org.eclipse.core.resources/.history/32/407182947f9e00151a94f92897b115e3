@@ -1,0 +1,110 @@
+package com.ralen;
+
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.reflections.Reflections;
+import org.reflections.scanners.FieldAnnotationsScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+
+import com.ralen.annotation.Bean;
+import com.ralen.annotation.Inject;
+
+public class ApplicationContext {
+
+	private Reflections reflections = null;
+	private Map<String, Object> clazzMap = new HashMap<String, Object>();
+	private Map<Class<?>, Object> beansMap = new HashMap<Class<?>, Object>();
+
+	public ApplicationContext(String basePackage) {
+		reflections = new Reflections(new ConfigurationBuilder()
+										.setUrls( ClasspathHelper.forPackage(basePackage) )
+										.setScanners( new FieldAnnotationsScanner(),
+													  new TypeAnnotationsScanner(),
+													  new SubTypesScanner()));
+		Set< Class<?> > beans = reflections.getTypesAnnotatedWith(Bean.class);
+		for (Class<?> bean : beans) {
+			try {
+				Bean an = bean.getAnnotation(Bean.class);
+				String name = null;
+				if(an.value().length() == 0){
+					name = bean.getSimpleName();
+				}else{
+					name = an.value();
+				}
+				Object obj = bean.newInstance();
+				clazzMap.put(name.toLowerCase(), obj);
+				beansMap.put(bean, obj);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("EEEEEEEEEEE" + clazzMap.get("message"));
+		
+		for(Entry<Class<?>, Object> entry: beansMap.entrySet()){
+			System.out.println(entry.getKey() + " " + entry.getValue());
+		}
+		
+		for(Entry<Class<?>, Object> entry: beansMap.entrySet()){
+			try {
+				assignFields(entry.getKey(), entry.getValue());
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getBean(String name) {
+		return (T) convertInstanceOfObject(clazzMap.get(name), clazzMap.get(name).getClass());
+	}
+	
+	private static <T> T convertInstanceOfObject(Object o, Class<T> clazz) {
+	    try {
+	        return clazz.cast(o);
+	    } catch(ClassCastException e) {
+	        return null;
+	    }
+	}
+
+	public Collection<Object> getBeans() {
+		return clazzMap.values();
+	}
+
+	public void lol() {
+		for (String o : clazzMap.keySet()) {
+			System.out.println(o);
+		}
+	}
+	
+	public void assignFields(Class<?> beans, Object obj) throws IllegalArgumentException, IllegalAccessException{
+		for(Field field: beans.getFields()){
+			Inject inject = field.getAnnotation(Inject.class);
+			if(inject != null){
+				String fieldName = inject.value();
+				Object fieldObj = null;
+				if(fieldName.length() == 0){
+					//fieldObj = clazzMap.get(field.getClass());
+					if(fieldObj == null){
+						System.out.println("Cannot inject");
+					}
+				}else{
+					fieldObj = clazzMap.get(fieldName.toLowerCase());
+				}
+				field.set(obj, fieldObj);
+			}
+		}
+	}
+}

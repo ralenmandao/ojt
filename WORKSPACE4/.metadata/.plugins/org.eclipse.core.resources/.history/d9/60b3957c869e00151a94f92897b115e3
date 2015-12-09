@@ -1,0 +1,7 @@
+
+@Bean("sample")
+public class Sample {
+	public void printMe(){
+		System.out.println("awe");
+	}
+}

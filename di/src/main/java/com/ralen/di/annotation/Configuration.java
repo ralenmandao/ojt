@@ -1,4 +1,4 @@
-package com.ralen.annotation;
+package com.ralen.di.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,6 +7,5 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Bean {
-	String value() default "";
+public @interface Configuration {
 }

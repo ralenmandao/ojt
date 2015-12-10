@@ -18,6 +18,9 @@ class Exercise4 {
 		}
 		println "current table size: ${numberOfRecords()}"
 		
+		def lol
+		lol.findAll()
+		
 		def rows = []
 		rows << ['test',2,2,'in progress']
 		rows << ['test5',3,6,'in progress']

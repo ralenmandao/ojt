@@ -34,5 +34,7 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
+	<classpathentry kind="lib" path="C:/Users/ralen/.m2/repository/org/slf4j/slf4j-api/1.7.13/slf4j-api-1.7.13.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ralen/.m2/repository/org/slf4j/slf4j-simple/1.7.13/slf4j-simple-1.7.13.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
